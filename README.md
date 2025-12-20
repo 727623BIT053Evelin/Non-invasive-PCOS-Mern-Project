@@ -4,7 +4,7 @@ A comprehensive PCOS management platform with AI-powered prediction, community f
 
 ## 🌟 Features
 
-- **ML-Powered Prediction**: Gradient Boosting model with SHAP explanations
+- **ML-Powered Prediction**: Gradient Boosting model with feature importance
 - **PDF Reports**: Downloadable medical reports with visualizations
 - **User Authentication**: Secure JWT-based auth system
 - **AI Chatbot**: PCOS-specific assistant on all pages

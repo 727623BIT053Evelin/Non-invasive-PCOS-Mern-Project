@@ -4,7 +4,6 @@ import Navbar from './components/Navbar';
 import PrivateRoute from './components/PrivateRoute';
 import AIChatbot from './components/AIChatbot';
 import Home from './pages/Home';
-import About from './pages/About';
 import Prediction from './pages/Prediction';
 import Contact from './pages/Contact';
 import Resources from './pages/Resources';
@@ -58,44 +57,45 @@ function App() {
 
     return (
         <Router>
-            <Navbar user={user} onLogout={handleLogout} />
+            <div className="app-box">
+                <Navbar user={user} onLogout={handleLogout} />
 
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/resources" element={<Resources />} />
-                <Route path="/consultation" element={<Consultation />} />
-                <Route path="/community" element={<Community user={user} />} />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/resources" element={<Resources />} />
+                    <Route path="/consultation" element={<Consultation />} />
+                    <Route path="/community" element={<Community user={user} />} />
 
-                <Route
-                    path="/login"
-                    element={user ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />}
-                />
-                <Route
-                    path="/register"
-                    element={user ? <Navigate to="/dashboard" /> : <Register onRegister={handleLogin} />}
-                />
+                    <Route
+                        path="/login"
+                        element={user ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />}
+                    />
+                    <Route
+                        path="/register"
+                        element={user ? <Navigate to="/dashboard" /> : <Register onRegister={handleLogin} />}
+                    />
 
-                <Route
-                    path="/prediction"
-                    element={
-                        <PrivateRoute user={user}>
-                            <Prediction user={user} />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/dashboard"
-                    element={
-                        <PrivateRoute user={user}>
-                            <Dashboard user={user} />
-                        </PrivateRoute>
-                    }
-                />
-            </Routes>
+                    <Route
+                        path="/prediction"
+                        element={
+                            <PrivateRoute user={user}>
+                                <Prediction user={user} />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <PrivateRoute user={user}>
+                                <Dashboard user={user} />
+                            </PrivateRoute>
+                        }
+                    />
+                </Routes>
 
-            <Footer />
+                <Footer />
+            </div>
 
             {/* AI Chatbot - appears on all pages */}
             <AIChatbot />

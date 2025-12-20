@@ -3,16 +3,15 @@ from flask_cors import CORS
 import joblib
 import numpy as np
 import pandas as pd
-import shap
-import matplotlib
-matplotlib.use('Agg')  # Non-interactive backend
-import matplotlib.pyplot as plt
+import joblib
+import numpy as np
+import pandas as pd
 import io
 import base64
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
 from reportlab.lib.units import inch
 from datetime import datetime
 import os
@@ -27,11 +26,6 @@ scaler = joblib.load("../ml_model/scaler.joblib")
 selector = joblib.load("../ml_model/selector.joblib")
 selected_features = joblib.load("../ml_model/selected_features.joblib")
 feature_names = joblib.load("../ml_model/feature_names.joblib")
-
-# Initialize SHAP explainer
-print("Initializing SHAP explainer...")
-# Use a subset of training data for SHAP background
-explainer = shap.TreeExplainer(model)
 print("✓ Models loaded successfully!")
 
 @app.route('/health', methods=['GET'])
@@ -42,7 +36,7 @@ def health_check():
 @app.route('/predict', methods=['POST'])
 def predict():
     """
-    Predict PCOS and return SHAP explanations
+    Predict PCOS and return results (without SHAP)
     """
     try:
         data = request.json
@@ -68,57 +62,18 @@ def predict():
         prediction = int(model.predict(input_selected)[0])
         probabilities = model.predict_proba(input_selected)[0].tolist()
         
-        # Calculate SHAP values
-        shap_values = explainer.shap_values(input_selected)
-        
-        # Get SHAP values for the predicted class
-        if len(shap_values.shape) == 3:
-            # Multi-class (use positive class)
-            shap_vals = shap_values[0, :, 1] if prediction == 1 else shap_values[0, :, 0]
-        else:
-            shap_vals = shap_values[0]
-        
-        # Create feature importance dictionary
+        # Use native feature importance instead of SHAP
+        importances = model.feature_importances_
         feature_importance = {}
         for i, feat in enumerate(selected_features):
-            feature_importance[feat] = float(shap_vals[i])
+            feature_importance[feat] = float(importances[i])
         
-        # Sort by absolute importance
+        # Sort by importance
         sorted_features = sorted(
             feature_importance.items(),
-            key=lambda x: abs(x[1]),
+            key=lambda x: x[1],
             reverse=True
         )
-        
-        # Generate SHAP waterfall plot
-        plt.figure(figsize=(10, 6))
-        if len(shap_values.shape) == 3:
-            shap.waterfall_plot(
-                shap.Explanation(
-                    values=shap_vals,
-                    base_values=explainer.expected_value[1] if prediction == 1 else explainer.expected_value[0],
-                    data=input_selected.values[0],
-                    feature_names=selected_features
-                ),
-                show=False
-            )
-        else:
-            shap.waterfall_plot(
-                shap.Explanation(
-                    values=shap_vals,
-                    base_values=explainer.expected_value,
-                    data=input_selected.values[0],
-                    feature_names=selected_features
-                ),
-                show=False
-            )
-        
-        # Save plot to base64 string
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight', dpi=100)
-        buffer.seek(0)
-        plot_base64 = base64.b64encode(buffer.read()).decode()
-        plt.close()
         
         return jsonify({
             "prediction": prediction,
@@ -126,9 +81,8 @@ def predict():
                 "no_pcos": probabilities[0],
                 "pcos": probabilities[1]
             },
-            "shap_values": feature_importance,
-            "top_features": sorted_features[:5],
-            "shap_plot": plot_base64
+            "feature_importance": feature_importance,
+            "top_features": sorted_features[:5]
         })
         
     except Exception as e:
@@ -137,7 +91,7 @@ def predict():
 @app.route('/generate-report', methods=['POST'])
 def generate_report():
     """
-    Generate PDF report with prediction and SHAP explanations
+    Generate PDF report with prediction
     """
     try:
         data = request.json
@@ -222,7 +176,7 @@ def generate_report():
         ))
         story.append(Spacer(1, 10))
         
-        features_data = [['Feature', 'Impact Score']]
+        features_data = [['Feature', 'Importance Score']]
         for feat, score in data['top_features'][:5]:
             features_data.append([feat, f"{score:.4f}"])
         
@@ -239,18 +193,6 @@ def generate_report():
         ]))
         story.append(features_table)
         story.append(Spacer(1, 20))
-        
-        # SHAP Visualization
-        if 'shap_plot' in data:
-            story.append(PageBreak())
-            story.append(Paragraph("Feature Importance Visualization", heading_style))
-            story.append(Spacer(1, 10))
-            
-            # Decode base64 image
-            img_data = base64.b64decode(data['shap_plot'])
-            img_buffer = io.BytesIO(img_data)
-            img = Image(img_buffer, width=6*inch, height=3.6*inch)
-            story.append(img)
         
         # Disclaimer
         story.append(Spacer(1, 30))
@@ -281,9 +223,8 @@ if __name__ == '__main__':
     print("PCOS ML Prediction Service")
     print("="*60)
     print("✓ Models loaded and ready")
-    print("✓ SHAP explainer initialized")
     print("\nEndpoints:")
-    print("  POST /predict          - Get prediction with SHAP values")
+    print("  POST /predict          - Get prediction")
     print("  POST /generate-report  - Generate PDF report")
     print("  GET  /health           - Health check")
     print("="*60)

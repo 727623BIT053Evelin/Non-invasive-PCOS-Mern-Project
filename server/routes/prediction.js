@@ -17,7 +17,7 @@ router.post('/', auth, async (req, res) => {
             inputFeatures
         );
 
-        const { prediction, probabilities, shap_values, top_features } = mlResponse.data;
+        const { prediction, probabilities, feature_importance, top_features } = mlResponse.data;
 
         // Save prediction to database
         const predictionDoc = new Prediction({
@@ -25,9 +25,6 @@ router.post('/', auth, async (req, res) => {
             inputFeatures,
             prediction,
             probabilities,
-            shapValues: Object.fromEntries(
-                Object.entries(shap_values).map(([k, v]) => [k.replace(/\./g, '_'), v])
-            ),
             topFeatures: top_features.map(([feature, impact]) => ({ feature, impact }))
         });
 
@@ -37,9 +34,7 @@ router.post('/', auth, async (req, res) => {
             id: predictionDoc._id,
             prediction,
             probabilities,
-            shapValues: shap_values,
-            topFeatures: top_features,
-            shapPlot: mlResponse.data.shap_plot
+            topFeatures: top_features
         });
     } catch (error) {
         console.error('Prediction error:', error);

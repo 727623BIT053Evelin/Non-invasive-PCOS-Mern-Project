@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X, Send, ChevronRight, Bot } from 'lucide-react';
 
 const PCOS_KNOWLEDGE = {
     "what foods should i avoid": "Avoid refined carbs (white bread, pastries), sugary drinks, processed foods, and excessive dairy. Focus on whole grains, lean proteins, vegetables, and healthy fats.",
@@ -34,17 +35,14 @@ function AIChatbot() {
             }
         }
 
-        // Default response
         return "I'm here to help with PCOS-related questions! Try asking about diet, symptoms, exercise, or natural management. For medical advice, please consult your healthcare provider.";
     };
 
     const handleSend = (text) => {
         if (!text.trim()) return;
 
-        // Add user message
         setMessages(prev => [...prev, { type: 'user', text }]);
 
-        // Get bot response
         setTimeout(() => {
             const answer = findAnswer(text);
             setMessages(prev => [...prev, { type: 'bot', text: answer }]);
@@ -53,62 +51,63 @@ function AIChatbot() {
         setInput('');
     };
 
-    const handleQuickQuestion = (question) => {
-        handleSend(question);
-    };
-
     return (
-        <>
-            <button
-                className="chatbot-button"
-                onClick={() => setIsOpen(!isOpen)}
-                title="PCOS AI Assistant"
-            >
-                💬
-            </button>
+        <div className="fixed bottom-8 right-8 z-[100]">
+            {/* Toggle Button */}
+            {!isOpen && (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="bg-primary text-white p-4 rounded-full shadow-[0_8px_30px_rgba(147,51,234,0.3)] hover:scale-110 active:scale-95 transition-all flex items-center justify-center font-bold"
+                >
+                    <Bot size={28} />
+                </button>
+            )}
 
+            {/* Chat Window */}
             {isOpen && (
-                <div className="chatbot-window">
-                    <div className="chatbot-header">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span>PCOS AI Assistant</span>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '1.5rem' }}
-                            >
-                                ×
-                            </button>
+                <div className="bg-white w-[380px] h-[600px] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-gray-100 animate-in slide-in-from-bottom-8 duration-300">
+                    {/* Header */}
+                    <div className="bg-primary p-6 text-white flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-white/20 p-2 rounded-xl">
+                                <Bot size={24} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold">AI Assistant</h3>
+                                <p className="text-xs text-purple-100 opacity-80 flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                                    Online
+                                </p>
+                            </div>
                         </div>
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
                     </div>
 
-                    <div className="chatbot-messages">
-                        {/* Quick Questions */}
+                    {/* Chat Area */}
+                    <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/50">
+                        {/* Welcome/Quick Questions */}
                         {messages.length === 1 && (
-                            <div style={{ marginBottom: '1rem' }}>
-                                <p style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '0.5rem' }}>
-                                    Quick questions:
-                                </p>
-                                {quickQuestions.map((q, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => handleQuickQuestion(q)}
-                                        style={{
-                                            display: 'block',
-                                            width: '100%',
-                                            padding: '0.5rem',
-                                            marginBottom: '0.5rem',
-                                            background: '#FAF5FF',
-                                            border: '1px solid #8B5CF6',
-                                            borderRadius: '8px',
-                                            color: '#8B5CF6',
-                                            cursor: 'pointer',
-                                            fontSize: '0.875rem',
-                                            textAlign: 'left'
-                                        }}
-                                    >
-                                        {q}
-                                    </button>
-                                ))}
+                            <div className="space-y-4">
+                                <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-sm text-gray-500 font-medium">
+                                    Suggested Questions:
+                                </div>
+                                <div className="grid gap-2">
+                                    {quickQuestions.map((q, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => handleSend(q)}
+                                            className="w-full text-left p-4 bg-white hover:bg-purple-50 hover:border-primary/30 border border-gray-100 rounded-2xl text-sm font-semibold text-gray-700 transition-all flex items-center justify-between group"
+                                        >
+                                            {q}
+                                            <ChevronRight size={16} className="text-gray-300 group-hover:text-primary transition-colors" />
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         )}
 
@@ -116,40 +115,40 @@ function AIChatbot() {
                         {messages.map((msg, i) => (
                             <div
                                 key={i}
-                                style={{
-                                    marginBottom: '1rem',
-                                    padding: '0.75rem',
-                                    borderRadius: '8px',
-                                    background: msg.type === 'bot' ? '#FAF5FF' : '#8B5CF6',
-                                    color: msg.type === 'bot' ? '#1F2937' : 'white',
-                                    maxWidth: '85%',
-                                    marginLeft: msg.type === 'user' ? 'auto' : '0'
-                                }}
+                                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
-                                {msg.text}
+                                <div
+                                    className={`max-w-[85%] p-4 rounded-2xl text-[15px] leading-relaxed shadow-sm ${msg.type === 'user'
+                                        ? 'bg-primary text-white rounded-tr-none'
+                                        : 'bg-white border border-gray-100 text-gray-800 rounded-tl-none'
+                                        }`}
+                                >
+                                    {msg.text}
+                                </div>
                             </div>
                         ))}
                     </div>
 
-                    <div className="chatbot-input">
+                    {/* Input Area */}
+                    <div className="p-6 bg-white border-t border-gray-100 flex gap-2">
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleSend(input)}
-                            placeholder="Ask about PCOS..."
+                            placeholder="Ask me anything..."
+                            className="flex-1 bg-gray-50 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none"
                         />
                         <button
-                            className="btn btn-primary"
                             onClick={() => handleSend(input)}
-                            style={{ padding: '0.5rem 1rem' }}
+                            className="bg-primary text-white p-3 rounded-2xl shadow-lg hover:bg-primary-dark transition-all active:scale-95"
                         >
-                            Send
+                            <Send size={20} />
                         </button>
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

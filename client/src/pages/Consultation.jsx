@@ -1,34 +1,40 @@
 function Consultation() {
     return (
-        <div className="container py-5">
-            <h1 className="text-primary text-center">Expert Help & Consultation</h1>
-            <p className="text-center text-gray mb-4">
-                Connect with certified gynecologists, endocrinologists, and nutritionists specializing in PCOS management.
-            </p>
+        <div className="container-standard py-12 min-h-screen bg-white">
 
-            <div className="card" style={{ maxWidth: '700px', margin: '0 auto' }}>
-                <h3>Find a Specialist</h3>
-                <form>
-                    <div className="form-group">
-                        <label className="form-label">Location</label>
-                        <input type="text" className="form-input" placeholder="City or Zip Code" />
+
+            <div className="max-w-2xl mx-auto bg-white border border-gray-100 p-8 md:p-12 rounded-[2.5rem] shadow-xl shadow-purple-950/5">
+                <h3 className="text-2xl font-bold text-gray-900 mb-8">Find a Specialist</h3>
+                <form className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="block text-sm font-bold text-gray-700 ml-1">Location</label>
+                        <input
+                            type="text"
+                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-gray-900 focus:ring-2 focus:ring-primary/20 transition-all outline-none placeholder:text-gray-400 font-medium"
+                            placeholder="City or Zip Code"
+                        />
                     </div>
-                    <div className="form-group">
-                        <label className="form-label">Specialty</label>
-                        <select className="form-select">
+                    <div className="space-y-2">
+                        <label className="block text-sm font-bold text-gray-700 ml-1">Specialty</label>
+                        <select className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-gray-900 focus:ring-2 focus:ring-primary/20 transition-all outline-none font-medium appearance-none cursor-pointer">
                             <option>Gynecologist</option>
                             <option>Endocrinologist</option>
                             <option>Nutritionist</option>
                             <option>Therapist</option>
                         </select>
                     </div>
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Search Experts</button>
+                    <button
+                        type="submit"
+                        className="w-full bg-primary text-white py-4 px-8 rounded-full font-bold hover:bg-primary-dark transition-all shadow-lg shadow-purple-500/20 active:scale-95 mt-4"
+                    >
+                        Search Experts
+                    </button>
                 </form>
             </div>
 
-            <div style={{ background: '#EDE9FE', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', marginTop: '3rem' }}>
-                <p style={{ fontSize: '0.875rem' }}>
-                    <strong>Note:</strong> This is for informational purposes only. Always consult your healthcare provider before starting any new treatment.
+            <div className="bg-purple-50/80 p-8 rounded-3xl text-center mt-20 border border-purple-100 max-w-3xl mx-auto">
+                <p className="text-sm text-gray-800 leading-relaxed">
+                    <strong className="text-primary font-bold">Note:</strong> This is for informational purposes only. Always consult your healthcare provider before starting any new treatment.
                 </p>
             </div>
         </div>

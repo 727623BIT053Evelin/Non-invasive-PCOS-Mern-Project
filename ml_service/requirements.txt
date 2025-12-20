@@ -4,8 +4,12 @@ scikit-learn
 pandas
 numpy
 joblib
-shap
-matplotlib
+flask
+flask-cors
+scikit-learn
+pandas
+numpy
+joblib
 reportlab
 pillow
 imbalanced-learn

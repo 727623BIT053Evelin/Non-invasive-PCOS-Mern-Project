@@ -36,10 +36,6 @@ const predictionSchema = new mongoose.Schema({
         no_pcos: Number,
         pcos: Number
     },
-    shapValues: {
-        type: Map,
-        of: Number
-    },
     topFeatures: [{
         feature: String,
         impact: Number
