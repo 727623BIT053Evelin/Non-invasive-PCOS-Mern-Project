@@ -9,6 +9,7 @@ const { auth, adminAuth } = require('../middleware/auth');
 router.get('/', async (req, res) => {
     try {
         const { specialty, location } = req.query;
+        console.log(`Expert search: specialty=${specialty}, location=${location}`);
 
         const query = {};
         if (specialty) query.specialty = specialty;

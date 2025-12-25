@@ -37,6 +37,13 @@ function Navbar({ user, onLogout }) {
 
                     {user ? (
                         <div className="flex items-center gap-4 ml-4 pl-4 border-l border-gray-100">
+                            {user.role === 'admin' && (
+                                <li>
+                                    <NavLink to="/admin/messages" className={navLinkStyles}>
+                                        Admin Panel
+                                    </NavLink>
+                                </li>
+                            )}
                             <li>
                                 <NavLink to="/dashboard" className={({ isActive }) =>
                                     `font-bold transition-colors ${isActive ? 'text-primary' : 'text-gray-900 hover:text-primary'}`
@@ -79,6 +86,13 @@ function Navbar({ user, onLogout }) {
 
                         {user ? (
                             <>
+                                {user.role === 'admin' && (
+                                    <li>
+                                        <NavLink to="/admin/messages" onClick={() => setIsOpen(false)} className={mobileNavLinkStyles}>
+                                            Admin Panel
+                                        </NavLink>
+                                    </li>
+                                )}
                                 <li>
                                     <NavLink to="/dashboard" onClick={() => setIsOpen(false)} className={({ isActive }) =>
                                         `block py-2 font-bold transition-colors pl-3 ${isActive ? 'text-primary border-l-4 border-primary' : 'text-gray-900'}`

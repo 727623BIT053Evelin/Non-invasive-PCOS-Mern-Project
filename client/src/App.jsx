@@ -13,6 +13,8 @@ import Dashboard from './pages/Dashboard';
 import Login from './components/Login';
 import Register from './components/Register';
 import Footer from './components/Footer';
+import AdminMessages from './pages/AdminMessages';
+import AdminAppointments from './pages/AdminAppointments';
 
 function App() {
     const [user, setUser] = useState(null);
@@ -64,7 +66,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/resources" element={<Resources />} />
-                    <Route path="/consultation" element={<Consultation />} />
+                    <Route path="/consultation" element={<Consultation user={user} />} />
                     <Route path="/community" element={<Community user={user} />} />
 
                     <Route
@@ -89,6 +91,22 @@ function App() {
                         element={
                             <PrivateRoute user={user}>
                                 <Dashboard user={user} />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/messages"
+                        element={
+                            <PrivateRoute user={user}>
+                                <AdminMessages user={user} />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/appointments"
+                        element={
+                            <PrivateRoute user={user}>
+                                <AdminAppointments user={user} />
                             </PrivateRoute>
                         }
                     />

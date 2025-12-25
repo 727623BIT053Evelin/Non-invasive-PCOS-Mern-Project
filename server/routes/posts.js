@@ -3,6 +3,32 @@ const router = express.Router();
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const { auth } = require('../middleware/auth');
+const multer = require('multer');
+const path = require('path');
+
+// Configure Multer for image upload
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|webp/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error('Only images are allowed'));
+    }
+});
 
 // @route   GET /api/posts
 // @desc    Get all posts
@@ -35,9 +61,10 @@ router.get('/', async (req, res) => {
 // @route   POST /api/posts
 // @desc    Create new post
 // @access  Private
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, upload.single('image'), async (req, res) => {
     try {
-        const { content, group, imageUrl } = req.body;
+        const { content, group } = req.body;
+        const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
         if (!content || !group) {
             return res.status(400).json({ message: 'Please provide content and group' });

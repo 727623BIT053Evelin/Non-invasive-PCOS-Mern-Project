@@ -9,7 +9,7 @@ const { auth } = require('../middleware/auth');
 // @access  Public
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, isAdmin } = req.body;
 
         // Validation
         if (!name || !email || !password) {
@@ -27,7 +27,12 @@ router.post('/register', async (req, res) => {
         }
 
         // Create user
-        const user = new User({ name, email, password });
+        const user = new User({
+            name,
+            email,
+            password,
+            isAdmin: isAdmin || false
+        });
         await user.save();
 
         // Create token

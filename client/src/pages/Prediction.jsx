@@ -81,7 +81,7 @@ function Prediction() {
     const helpTextClass = "text-[11px] text-gray-400 mt-1 ml-1 font-medium";
 
     return (
-        <div className="container-standard py-12 min-h-screen bg-white">
+        <div className="container-standard py-12 min-h-screen">
             {error && (
                 <div className="max-w-5xl mx-auto flex items-center gap-4 p-6 bg-red-50 border border-red-100 rounded-2xl text-red-600 mb-8 font-bold animate-in fade-in slide-in-from-top-4">
                     <AlertCircle size={24} />
@@ -242,16 +242,16 @@ function Prediction() {
                     <div className="p-8 md:p-12 border-t border-gray-100 animate-in fade-in slide-in-from-bottom-12 duration-1000">
                         <h2 className="text-3xl font-black text-gray-900 text-center mb-12 tracking-tight">Analysis <span className="text-primary">Summary</span></h2>
 
-                        <div className={`p-10 rounded-[3rem] text-center mb-12 border-2 transition-all ${result.prediction === 1
+                        <div className={`p-6 rounded-[2rem] text-center mb-12 border-2 transition-all ${result.prediction === 1
                             ? 'bg-red-50/50 border-red-100'
                             : 'bg-green-50/50 border-green-100'
                             }`}>
-                            <div className="flex flex-col items-center gap-6">
-                                <div className={`p-6 rounded-full ${result.prediction === 1 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
-                                    {result.prediction === 1 ? <AlertCircle size={48} /> : <CheckCircle2 size={48} />}
+                            <div className="flex flex-col items-center gap-4">
+                                <div className={`p-4 rounded-full ${result.prediction === 1 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                                    {result.prediction === 1 ? <AlertCircle size={32} /> : <CheckCircle2 size={32} />}
                                 </div>
                                 <div>
-                                    <h3 className={`text-3xl md:text-3xl font-black mb-3 ${result.prediction === 1 ? 'text-red-600' : 'text-green-600'}`}>
+                                    <h3 className={`text-xl font-black mb-2 ${result.prediction === 1 ? 'text-red-600' : 'text-green-600'}`}>
                                         {result.prediction === 1 ? 'POTENTIAL RISK DETECTED' : 'LOW RISK DETECTED'}
                                     </h3>
                                     <div className="flex items-center justify-center gap-3">
@@ -261,7 +261,7 @@ function Prediction() {
                                                 style={{ width: `${result.probabilities.pcos * 100}%` }}
                                             ></div>
                                         </div>
-                                        <span className="text-gray-900 font-black text-xl">{(result.probabilities.pcos * 100).toFixed(1)}%</span>
+                                        <span className="text-gray-900 font-black text-lg">{(result.probabilities.pcos * 100).toFixed(1)}%</span>
                                     </div>
                                 </div>
                             </div>
@@ -274,14 +274,14 @@ function Prediction() {
                                     Risk Drivers
                                 </h3>
                                 <div className="space-y-3">
-                                    {result.topFeatures.map(([feature, impact], i) => (
-                                        <div key={i} className="flex justify-between items-center p-5 bg-white border border-gray-100 rounded-[1.5rem] hover:border-primary/20 transition-colors shadow-sm">
-                                            <span className="font-bold text-gray-700">{feature}</span>
+                                    {result.topFeatures.slice(0, 7).map(([feature, impact], i) => (
+                                        <div key={i} className="flex justify-between items-center p-4 bg-white border border-gray-100 rounded-[1.5rem] hover:border-primary/20 transition-colors shadow-sm">
+                                            <span className="font-bold text-gray-700 text-sm">{feature}</span>
                                             <div className="flex items-center gap-4">
-                                                <div className="w-16 h-1.5 bg-gray-50 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-primary" style={{ width: `${Math.min(impact * 1000, 100)}%` }}></div>
+                                                <div className="w-16 h-1 bg-gray-50 rounded-full overflow-hidden">
+                                                    <div className="h-full bg-primary" style={{ width: `${Math.min(Math.abs(impact) * 100, 100)}%` }}></div>
                                                 </div>
-                                                <span className="text-xs font-black text-primary bg-purple-50 px-3 py-1 rounded-full">{impact.toFixed(4)}</span>
+                                                <span className="text-[10px] font-black text-primary bg-purple-50 px-2.5 py-1 rounded-full">{Math.abs(impact).toFixed(4)}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -304,9 +304,9 @@ function Prediction() {
                                         <FileDown size={24} className="text-primary group-hover:text-white transition-colors" />
                                     </button>
 
-                                    <div className="flex gap-4 p-6 bg-purple-100/30 rounded-2xl border border-purple-100">
-                                        <Info size={24} className="text-primary shrink-0" />
-                                        <p className="text-xs text-gray-800 leading-relaxed font-medium">
+                                    <div className="flex gap-4 p-6 bg-red-50 rounded-2xl border border-red-100">
+                                        <Info size={24} className="text-red-500 shrink-0" />
+                                        <p className="text-xs text-red-700 leading-relaxed font-medium">
                                             <strong>Medical Disclaimer:</strong> This automated analysis is designed for early screening. It is essential to share this result with a healthcare professional for a comprehensive evaluation.
                                         </p>
                                     </div>

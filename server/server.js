@@ -7,9 +7,12 @@ dotenv.config();
 
 const app = express();
 
+const path = require('path');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -23,6 +26,8 @@ app.use('/api/posts', require('./routes/posts'));
 app.use('/api/experts', require('./routes/experts'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/testimonials', require('./routes/testimonials'));
+app.use('/api/contact', require('./routes/contact'));
+app.use('/api/appointments', require('./routes/appointments'));
 
 // Health check
 app.get('/health', (req, res) => {

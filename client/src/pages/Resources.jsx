@@ -2,7 +2,7 @@ import { Apple, Activity, Heart, ShieldAlert, Sparkles, CheckCircle2 } from 'luc
 
 function Resources() {
     return (
-        <div className="container-standard py-12 min-h-screen bg-white">
+        <div className="container-standard py-12 min-h-screen">
 
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20 font-outfit">
