@@ -8,6 +8,8 @@ dotenv.config();
 const app = express();
 
 const path = require('path');
+console.log('--- SERVER STARTING ---');
+console.log('Path:', __dirname);
 
 // Middleware
 app.use(cors());
@@ -28,6 +30,8 @@ app.use('/api/events', require('./routes/events'));
 app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/appointments', require('./routes/appointments'));
+app.use('/api/chat', require('./routes/chat'));
+app.get('/api/test-direct', (req, res) => res.json({ message: 'Server is reachable and code is updated' }));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -41,5 +45,6 @@ app.listen(PORT, () => {
     console.log(`${'='.repeat(60)}`);
     console.log(`✓ Server running on port ${PORT}`);
     console.log(`✓ API endpoints: http://localhost:${PORT}/api`);
+    console.log('✓ Chatbot route active');
     console.log(`${'='.repeat(60)}\n`);
 });

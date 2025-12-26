@@ -36,7 +36,7 @@ def health_check():
 @app.route('/predict', methods=['POST'])
 def predict():
     """
-    Predict PCOS and return results (without SHAP)
+    Predict PCOS and return results
     """
     try:
         data = request.json

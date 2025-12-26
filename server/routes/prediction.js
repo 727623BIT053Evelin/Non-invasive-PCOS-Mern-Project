@@ -51,8 +51,7 @@ router.post('/', auth, async (req, res) => {
 router.get('/history', auth, async (req, res) => {
     try {
         const predictions = await Prediction.find({ user: req.user._id })
-            .sort({ createdAt: -1 })
-            .select('-shapValues'); // Exclude large SHAP data for list view
+            .sort({ createdAt: -1 });
 
         res.json(predictions);
     } catch (error) {
@@ -62,7 +61,7 @@ router.get('/history', auth, async (req, res) => {
 });
 
 // @route   GET /api/predictions/:id
-// @desc    Get specific prediction with SHAP data
+// @desc    Get specific prediction details
 // @access  Private
 router.get('/:id', auth, async (req, res) => {
     try {
@@ -100,8 +99,7 @@ router.post('/:id/report', auth, async (req, res) => {
         const reportData = {
             prediction: prediction.prediction,
             probabilities: prediction.probabilities,
-            top_features: prediction.topFeatures.map(f => [f.feature, f.impact]),
-            shap_plot: req.body.shapPlot // Pass from frontend
+            top_features: prediction.topFeatures.map(f => [f.feature, f.impact])
         };
 
         // Request PDF from ML service

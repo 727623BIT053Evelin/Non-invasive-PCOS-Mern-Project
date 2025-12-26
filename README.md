@@ -5,7 +5,7 @@ PCOS Care is a state-of-the-art, non-invasive digital health platform designed t
 ## 🌟 Key Features
 
 - **🧠 ML-Powered Screening**: Utilizing a Gradient Boosting model to provide high-accuracy PCOS risk assessments based on non-invasive parameters.
-- **📄 Clinical PDF Reports**: Instant generation of detailed medical reports featuring SHAP (SHapley Additive exPlanations) visualizations for clinical transparency.
+- **📄 Clinical PDF Reports**: Instant generation of detailed medical reports for clinical transparency and physician consultation.
 - **🏥 Expert Consultation**: Robust booking system for gynecologists, nutritionists, and therapists with real-time status tracking.
 - **🤖 AI Quality Guardian**: An integrated chatbot assistant for immediate support and project guidance.
 - **👥 Community & Insights**: A decentralized social hub for sharing experiences, joining support groups, and discovering health events.
@@ -36,12 +36,11 @@ graph TD
     subgraph "Compute Layer (Flask + ML)"
         ML_SVC[Flask Microservice]
         Model[Gradient Boosing Model]
-        SHAP[SHAP Explainer]
         PDF[Report Generator]
     end
 
     subgraph "Data Layer"
-        MDB[(MongoDB Atlas)]
+        MDB[(MongoDB Database)]
     end
 
     User --> UI
@@ -53,21 +52,20 @@ graph TD
     Query --> MDB
     API -- "Internal Request" --> ML_SVC
     ML_SVC --> Model
-    ML_SVC --> SHAP
     ML_SVC --> PDF
 ```
 
 ### Component Breakdown
 1. **Frontend (Client)**: A responsive SPA built with React, styled using Vanilla CSS for a premium, custom aesthetic. It handles real-time UI updates for appointment statuses and prediction history.
 2. **Backend (Server)**: A RESTful API built with Express.js that manages authentication, business logic for community posts, and serves as a gateway to the ML service.
-3. **ML Service (Intelligence)**: A Python/Flask microservice that performs inference using a pre-trained scikit-learn model. It calculates feature importance (local risk drivers) for every prediction to ensure explainable AI.
+3. **ML Service (Intelligence)**: A Python/Flask microservice that performs inference using a pre-trained scikit-learn model. It analyzes key risk drivers for every prediction to ensure explainable AI.
 4. **Database (Persistence)**: MongoDB stores user profiles, encrypted credentials, prediction records, and clinic appointment data.
 
 ## 🧠 Machine Learning Pipeline
 
 The core "brain" of the project focuses on transparency and accuracy:
 1. **Inference**: The model receives 20+ non-invasive inputs (Age, BMI, Cycle Length, etc.) and returns a probability score.
-2. **Explainability**: Using SHAP values, the system identifies the "Top Risk Drivers" for each specific user, explaining *why* a particular result was achieved.
+2. **Analysis**: The system identifies the "Top Risk Drivers" for each specific user, explaining *why* a particular result was achieved.
 3. **Reporting**: The Flask service generates a `ReportLab` PDF containing clinical summaries and visualizations for the user to share with their physician.
 
 ## 🚀 Quick Start & Setup
@@ -75,7 +73,7 @@ The core "brain" of the project focuses on transparency and accuracy:
 ### 1. Prerequisites
 - **Node.js** (v18+) & **npm**
 - **Python** (v3.10+)
-- **MongoDB** (Atlas or Local)
+- **MongoDB** (Local instance recommended)
 
 ### 2. Installation
 ```bash
