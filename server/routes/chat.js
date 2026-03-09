@@ -5,6 +5,23 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Initialize Gemini API
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// Retry helper function
+async function retryWithBackoff(fn, maxRetries = 3, baseDelay = 1000) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            return await fn();
+        } catch (error) {
+            if (error.status === 503 && attempt < maxRetries) {
+                const delay = baseDelay * Math.pow(2, attempt - 1); // Exponential backoff
+                console.log(`Attempt ${attempt} failed with 503. Retrying in ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            } else {
+                throw error;
+            }
+        }
+    }
+}
+
 const SYSTEM_PROMPT = `
 You are "PCOS Care Assistant", a professional and empathetic health assistant for the PCOS Care platform.
 Your goal is to help users manage Polycystic Ovary Syndrome (PCOS) by providing information from the platform and general medical knowledge.
@@ -95,15 +112,21 @@ Analyze this data for the user if they ask about their results.
             ],
         });
 
-        const result = await chat.sendMessage(message);
+        const result = await retryWithBackoff(async () => {
+            return await chat.sendMessage(message);
+        });
         const response = await result.response;
         const text = response.text();
 
         res.json({ text });
     } catch (error) {
         console.error('Gemini API Error details:', error);
+        let errorMessage = 'Failed to get a response from AI Assistant';
+        if (error.status === 503) {
+            errorMessage = 'The AI service is currently experiencing high demand. Please try again in a few moments.';
+        }
         res.status(500).json({
-            message: 'Failed to get a response from AI Assistant',
+            message: errorMessage,
             error: error.message
         });
     }
